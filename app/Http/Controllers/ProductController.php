@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -13,7 +17,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('admin.product.index');
+        $products = Product::query()->orderBy('created_at', 'DESC')->get();
+        return view('admin.product.index', compact('products'));
     }
 
     /**
@@ -23,7 +28,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+        return view('admin.product.create', compact('categories'));
     }
 
     /**
@@ -32,9 +38,21 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //
+        $data = [
+            'name' => $request->name,
+            'slug' => Str::slug($request->name, '-'),
+            'description' => $request->description,
+            'thumbnail' => $request->thumbnail,
+            'stock' => $request->stock,
+            'price' => $request->price,
+            'discount' => $request->discount,
+            'category_id' => $request->category,
+        ];
+
+        Product::create($data);
+        return redirect('/admin/product')->with('success', 'Product ' . $request->name . ' has ben created');
     }
 
     /**
@@ -54,9 +72,11 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($slug)
     {
-        //
+        $product = Product::where('slug', $slug)->first();
+        $categories = Category::all();
+        return view('admin.product.edit', compact('product', 'categories'));
     }
 
     /**
@@ -68,7 +88,19 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $product = Product::find($id);
+        $data = [
+            'name' => $request->name,
+            'slug' => Str::slug($request->name, '-'),
+            'description' => $request->description,
+            'thumbnail' => $request->thumbnail,
+            'stock' => $request->stock,
+            'price' => $request->price,
+            'discount' => $request->discount,
+            'category_id' => $request->category,
+        ];
+        $product->Update($data);
+        return redirect('/admin/product')->with('success', 'Product ' . $request->name . ' has ben updated');
     }
 
     /**
@@ -79,6 +111,9 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Product::find($id);
+
+        $product->delete();
+        return redirect('/admin/product')->with('success', 'Product ' . $product->name . ' has ben deleted');
     }
 }

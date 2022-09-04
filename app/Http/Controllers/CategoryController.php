@@ -44,7 +44,7 @@ class CategoryController extends Controller
         ];
 
         Category::create($data);
-        return redirect('/category')->with('success', 'Category ' . $request->title . ' has ben created');
+        return redirect('/admin/category')->with('success', 'Category ' . $request->title . ' has ben created');
     }
 
     /**
@@ -85,7 +85,7 @@ class CategoryController extends Controller
         ];
 
         $category->update($data);
-        return redirect('/category')->with('success', 'Category ' . $request->title . ' has ben updated');
+        return redirect('/admin/category')->with('success', 'Category ' . $request->title . ' has ben updated');
     }
 
     /**
@@ -98,6 +98,6 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
         $category->delete($category);
-        return redirect('/category')->with('success', 'Category ' . $category->title . ' has ben deleted');
+        return redirect('/admin/category')->with('success', 'Category ' . $category->title . ' has ben deleted');
     }
 }

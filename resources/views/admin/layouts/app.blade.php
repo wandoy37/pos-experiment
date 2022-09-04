@@ -9,6 +9,9 @@
     {{-- Fontawesome --}}
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
 
+    {{-- SweetAlert --}}
+    <link rel='stylesheet' href='{{ asset('assets/sweetalert/sweetalert2.min.css') }}'>
+
   </head>
   <body>
     {{-- navbar --}}
@@ -28,7 +31,10 @@
                 </li>
                 </ul>
                 <div class="d-flex">
-                    <button class="btn btn-outline-primary" type="submit">Logout</button>
+                    <form action="{{ route('logout') }}" id="logout-form" method="POST">
+                        @csrf
+                    </form>
+                    <button class="btn btn-outline-primary" type="submit" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</button>
                 </div>
             </div>
         </div>
@@ -40,11 +46,14 @@
     {{-- /content --}}
 
 
+    {{-- SweetAlert --}}
+    <script src="{{ asset('assets/sweetalert/sweetalert2.min.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
-
-
-
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+
+    @stack('scripts')
   </body>
 </html>

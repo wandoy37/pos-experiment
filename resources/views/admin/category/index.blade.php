@@ -42,10 +42,10 @@
                                 <i class="fa-solid fa-pencil"></i>
                                 Edit
                             </button>
-                            <form action="{{ url("/category/$category->id/delete") }}" method="POST" class="d-inline">
+                            <form id="form-delete" action="{{ url("/admin/category/$category->id/delete") }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-link text-danger">
+                                <button class="btn btn-link text-danger" id="btn-delete">
                                     <i class="fa-solid fa-trash"></i>
                                     Delete
                                 </button>
@@ -64,3 +64,28 @@
 
 @include('admin.category.create')
 @include('admin.category.edit')
+
+@push('scripts')
+
+<script>
+    $(document).on('click', '#btn-delete', function(e) {
+        e.preventDefault();
+        var link = $(this).attr('href');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Data will be deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#form-delete').submit();
+            }
+        });
+    });
+</script>
+
+@endpush

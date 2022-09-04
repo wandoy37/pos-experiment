@@ -11,14 +11,13 @@
                 {{ session('success') }}
             </div>
         @endif
+
+        <div id="flash "></div>
+
         <div class="col-lg">
-            {{-- <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#createCategory">
-                <i class="fa-solid fa-plus"></i>
-                Category
-              </button> --}}
             <a href="{{ route('category') }}" class="btn btn-light">Categories</a>
             <div class="float-end">
-                <a href="http://" class="btn btn-primary">
+                <a href="{{ route('product.create') }}" class="btn btn-primary">
                     <i class="fa-solid fa-plus"></i>
                     Product
                 </a>
@@ -38,21 +37,27 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>Otto</td>
-                    <td>
-                        <button class="btn btn-link">
-                            <i class="fa-solid fa-pencil"></i>
-                            Edit
-                        </button>
-                        <button class="btn btn-link">
-                            <i class="fa-solid fa-trash"></i>
-                            Delete
-                        </button>
-                    </td>
-                  </tr>
+                    @foreach ($products as $product)
+                        <tr>
+                            <td>{{ $product->name }}</td>
+                            <td>{{ $product->price }}</td>
+                            <td>{{ $product->category->title }}</td>
+                            <td>
+                                <a href="{{ url("/admin/product/$product->slug/edit") }}">
+                                    <i class="fa-solid fa-pencil"></i>
+                                    Edit
+                                </a>
+                                <form id="form-delete" action="{{ url("/admin/product/$product->id/delete") }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-link text-danger" id="btn-delete">
+                                        <i class="fa-solid fa-trash"></i>
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -61,5 +66,30 @@
 </div>
 
 @endsection
+
+@push('scripts')
+
+<script>
+    $(document).on('click', '#btn-delete', function(e) {
+        e.preventDefault();
+        var link = $(this).attr('href');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Data will be deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#form-delete').submit();
+            }
+        });
+    });
+</script>
+
+@endpush
 
 
